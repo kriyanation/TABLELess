@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<script src="d3.min.js"></script>
+
+<style>
+
+.chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+</style>
+<div class="chart">
+
+</div>
+<svg width=500 height="100">
+  <circle cx="300" cy="25" r="22" fill="blue" stroke="gray" stroke-width="2"/>
+  <ellipse cx="250" cy="25" rx="100" ry="25"/>
+  <line x1="0" y1="0" x2="500" y2="50" stroke="black"/>
+  <text x="250" y="25" font-family="serif" font-size="25"
+fill="gray">Easy-peasy</text>
+<circle cx="25" cy="25" r="22"
+fill="yellow" stroke="orange" stroke-width="5"/>
+
+<rect x="0" y="0" width="30" height="30" fill="purple"/>
+<rect x="20" y="5" width="30" height="30" fill="blue"/>
+<rect x="40" y="10" width="30" height="30" fill="green"/>
+
+
+
+
+
+</svg>
+ 
+
+
+<script>
+var noTABLE = {};
+var data = [4, 8, 15, 16, 23, 42];
+var dataOne = [{"x": 20.0, "y": 10.1}, {"x": 50.0, "y": 30.5},{"x": 80.0, "y": 60.5}]
+d3.select("svg").selectAll("circle")
+.data(dataOne)
+.enter().append("circle")
+.attr("cx", function(d) { return d.x; })
+    .attr("cy", function(d) { return d.y; })
+    .attr("r", 20.5);
+d3.select(".chart")
+  .selectAll("div")
+  .data(data)
+  .enter().append("div")
+  .style("width",function(d){return d*10+"px";})
+  .text(function(d){return d;});
+
+  noTABLE.calculateTemperature = function(t){
+    m = 20;
+    return m*t;
+  }
+
+console.log(noTABLE.calculateTemperature(20));
+</script>
+

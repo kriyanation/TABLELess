@@ -1,0 +1,405 @@
+<html>
+<head>
+	<style>
+	#MenuBar{
+		background: darkblue;
+		width: 1370px;
+		height: 80px;
+		padding:0;
+		margin:0;
+	}
+	#tooltip {
+position: absolute;
+width: 200px;
+height: auto;
+padding: 10px;
+background-color: white;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+pointer-events: none;
+}
+
+#tooltip.hidden {
+display: none;
+}
+	#tooltip p {
+margin: 0;
+font-family: sans-serif;
+font-size: 12px;
+Tooltips | 193
+line-height: 20px;
+}
+	</style>
+
+</head>
+<script src="d3.min.js"></script>
+
+<body style="padding:0;margin:0;">
+	<svg id="mySvg" width="50" height="0">
+      <defs id="mdef">
+        <pattern id="image" x="0" y="0" height="60" width="60">
+          <image x="20" y="15" width="80" height="80" xlink:href="money-icon.png"></image>
+        </pattern>
+  </defs>
+</svg>
+	<div id="tooltip" class="hidden">
+<p><span id="value"></span></p>
+</div>
+	
+<div id="MenuBar">
+<script>
+var HI = {};
+
+var svgArea = d3.select(MenuBar)
+ .append("svg")
+ .attr("width", 1370)
+ .attr("height", 80)
+ .attr("color","darkblue");
+
+function readMenus(){
+d3.csv("menuBank.csv", function(data) {
+ HI.MenuData = data;
+ 
+ generateMenus();
+});
+}
+
+function generateMenus(){
+svgArea.selectAll("circle")
+  .data(HI.MenuData)
+  .enter()
+  .append("circle")
+  .attr("fill","white")
+  .attr("r","30")
+  .attr("cx", function(d,i){console.log("lengthMenu"+HI.MenuData.length); return (1405 - ((1370*(i+1))/HI.MenuData.length))})
+  .attr("cy", 40)
+  .attr("stroke","blue")
+  .on("click", function() {
+//Do something mundane and annoying on click
+var id = document.getElementById("MainPage");
+if(id != null){
+id.style.display = "block";
+generateMainPage();
+}
+})
+  .on("mouseover", function() {
+//Do something mundane and annoying on click
+this.style.cursor = "pointer";
+
+});
+
+
+ svgArea.selectAll("text")
+   .data(HI.MenuData)
+   .enter()
+  .append("text")
+  .attr("x", function(d,i){ return (1403 - ((1370*(i+1))/HI.MenuData.length))})
+  .attr("y",40)
+  .text(function(d){ return d.MenuName})
+  .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "9px")
+.attr("fill", "teal")
+.attr("text-anchor", "middle");
+
+
+svgArea.selectAll("circle")
+.data(HI.MenuData)
+.transition()
+ .attr("cx", function(d,i){ return (1450 - ((1370*(i+1))/HI.MenuData.length))})
+ .attr("stroke","orange")
+    .duration(1500)
+    .delay(100);
+
+    svgArea.selectAll("circle")
+    .data(HI.MenuData)
+    .transition()
+ .attr("cx", function(d,i){ return (1405 - ((1370*(i+1))/HI.MenuData.length))})
+ .attr("stroke","darkblue")
+    .duration(1500)
+    .delay(2000);
+
+    svgArea.selectAll("text")
+    .data(HI.MenuData)
+    .transition()    
+ .attr("x", function(d,i){  return (1450 - ((1370*(i+1))/HI.MenuData.length))})
+    .duration(1500)
+    .delay(100);
+
+    svgArea.selectAll("text")
+    .data(HI.MenuData)
+    .transition()
+ .attr("x", function(d,i){ return (1403 - ((1370*(i+1))/HI.MenuData.length))})
+    .duration(1500)
+    .delay(2000);
+}
+setInterval(readMenus,3000);
+	
+
+</script>
+</div>
+<div id="MainPage" >
+	
+	<script>
+	function generateMainPage(){
+var svgAreaTotal = d3.select(MainPage)
+ .append("svg")
+ .attr("width", 1370)
+ .attr("height", 1500);
+
+
+
+ 
+d3.csv("Transactions.csv", function(data) {
+ HI.TransactionData = data; 
+ HI.DepositData = new Array();
+ HI.TotalDeposits = new Array();
+ HI.TotalWithdrawals = new Array();
+
+ HI.WithDrawalsData = new Array();
+ var total =0;
+ var totalW = 0;
+ for(var i = 0; i<HI.TransactionData.length;i++){
+ 	
+ 	if(HI.TransactionData[i].Deposits.trim() != ""){
+ 		 total += parseInt(HI.TransactionData[i].Deposits);
+
+console.log("total"+HI.TotalDeposits);
+
+ 		HI.DepositData.push(HI.TransactionData[i]); 	
+ 		
+ 	}
+ 	if(HI.TransactionData[i].Withdrawals.trim() != ""){
+ 		console.log("found not null");
+ 		totalW += parseInt(HI.TransactionData[i].Withdrawals);
+ 		HI.WithDrawalsData.push(HI.TransactionData[i]); 	
+ 		
+ 	}
+ 	console.log(HI.WithDrawalsData);
+ }
+ HI.TotalDeposits.push(total);
+ HI.TotalWithdrawals.push(totalW);
+
+ generateTrans();
+});
+
+function generateTrans(){
+svgAreaTotal.selectAll("ellipse")
+.data(HI.TotalDeposits)
+.enter()
+.append("ellipse")
+.attr("fill","azure")
+.attr("cx", 250)
+.attr("cy", 100)
+.attr("rx", 60)
+.attr("stroke","darkblue")
+.attr("ry", 20);
+
+svgAreaTotal.selectAll("ellipse2")
+.data(HI.TotalWithdrawals)
+.enter()
+.append("ellipse")
+.attr("fill","azure")
+.attr("cx", 820)
+.attr("cy", 100)
+.attr("rx", 60)
+.attr("stroke","darkblue")
+.attr("ry", 20);
+
+svgAreaTotal.selectAll("text.withdrawal")
+.data(HI.TotalWithdrawals)
+.enter()
+.append("g")
+.append("text")
+  .attr("x",825)
+  .attr("y", 100) 
+ .text(function(d,i){return "Rs "+d+"(Dr)";}) 
+   .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "11px")
+.attr("fill", "darkblue")
+.attr("text-anchor", "middle");
+
+svgAreaTotal.selectAll("text.deposit")
+.data(HI.TotalDeposits)
+.enter()
+.append("g")
+.append("text")
+  .attr("x",255)
+  .attr("y", 100) 
+ .text(function(d,i){return "Rs "+d+"(Cr)";}) 
+   .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "11px")
+.attr("fill", "darkblue")
+.attr("text-anchor", "middle");
+
+
+
+
+svgAreaTotal.selectAll("rect.dep")
+  .data(HI.DepositData)
+  .enter()
+  .append("g")
+  .append("rect")
+  .attr("fill", function(d){ if(parseInt(d.Deposits) > 5000) return "lightgreen"; else return "lightgrey";})
+  .attr("x","150")
+  .attr("y", function(d,i){ return 150+(i*60)})
+  .attr("width", 200)
+  .attr("height", 30)
+  .attr("rx", 8)
+  .attr("ry", 8)
+  .attr("stroke","blue")
+  .on("click", function() {
+})
+    .on("mouseover", function(d) {
+//Get this bar's x/y values, then augment for the tooltip
+var xPosition = parseFloat(d3.select(this).attr("x"));
+var yPosition = parseFloat(d3.select(this).attr("y"));
+//Update the tooltip position and value
+d3.select("#tooltip")
+.style("left", xPosition+100 + "px")
+.style("top", yPosition+100 + "px")
+.select("#value")
+.text("Date :"+ d.Date+"-"+d.Description);
+//Show the tooltip
+d3.select("#tooltip").classed("hidden", false);
+})
+  .on("mouseout", function() {
+//Hide the tooltip
+d3.select("#tooltip").classed("hidden", true);
+});
+  svgAreaTotal.selectAll("text.dep")
+  .data(HI.DepositData)
+  .enter()
+  .append("g")
+  .append("text")
+  .attr("x","245")
+  .attr("y", function(d,i){ return 170+(i*60)}) 
+  .text(function(d,i){return "Rs "+d.Deposits}) 
+  .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "12px")
+.attr("fill", "darkblue")
+.attr("text-anchor", "middle");
+var balanceValue = 50000 + (HI.TotalDeposits[0] - HI.TotalWithdrawals[0]);
+var balance = svgAreaTotal.append("circle")
+        .style("stroke", "blue")
+        .attr("fill", function(d){ if(balanceValue > 50000) return "lightgreen"; else return "lightgrey";})
+        .attr("cx", 550)
+        .attr("cy", 80)
+        .attr("r", 50)
+        
+ var balanceText = svgAreaTotal.append("text")
+        .attr("x", 545)
+        .attr("y", 80)
+        .text("Rs "+balanceValue)
+         .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "12px")
+.attr("fill", "darkblue")
+.attr("text-anchor", "middle");//balanceValue);
+ /*var line = svgAreaTotal.append("line")
+        .style("stroke", "black")
+        .attr("x1", 125)
+        .attr("y1", 130)
+        .attr("x2", 125)
+        .attr("y2",  160);*/
+
+  svgAreaTotal.selectAll("line.dep")
+  .data(HI.DepositData)
+  .enter()
+  .append("g")
+  .append("line")
+  .attr("x1","245")
+  .attr("y1", function(d,i){ return 120+(i*60)}) 
+  .attr("x2","245")
+  .attr("y2", function(d,i){ return 150+(i*60)}) 
+  .style("stroke", "black");
+ 
+
+svgAreaTotal.selectAll("rect.with")
+  .data(HI.WithDrawalsData)
+  .enter()
+  .append("g")
+  .append("rect")
+  .attr("fill", function(d){ if(parseInt(d.Withdrawals) > 5000) return "lightgreen"; else return "lightgrey";})
+  .attr("x","720")
+  .attr("y", function(d,i){ return 150+(i*60)})
+  .attr("width", 200)
+  .attr("height", 30)
+  .attr("rx", 5)
+  .attr("ry", 5)
+  .attr("stroke","blue")
+  .on("click", function() {
+})
+  .on("mouseover", function(d) {
+//Get this bar's x/y values, then augment for the tooltip
+var xPosition = parseFloat(d3.select(this).attr("x"));
+var yPosition = parseFloat(d3.select(this).attr("y"));
+//Update the tooltip position and value
+d3.select("#tooltip")
+.style("left", xPosition+100 + "px")
+.style("top", yPosition+100 + "px")
+.select("#value")
+.text("Date :"+ d.Date+"-"+d.Description);
+//Show the tooltip
+d3.select("#tooltip").classed("hidden", false);
+})
+  .on("mouseout", function() {
+//Hide the tooltip
+d3.select("#tooltip").classed("hidden", true);
+});
+
+  svgAreaTotal.selectAll("rect")
+  .transition()
+  .duration(1000)
+  .delay(1500)
+  .attr("stroke", "orange")
+  .ease();
+ /*  function(d) {
+    var r = Math.round(d%255),
+        g = getRandomInt(0, 150),
+        b = getRandomInt(0, 150);
+    return "rgb(" + [r, g, b].join(",") + ")";
+  });*/
+
+  svgAreaTotal.selectAll("text.w")
+  .data(HI.WithDrawalsData)
+  .enter()
+  .append("text")
+  .attr("x","820")
+  .attr("y", function(d,i){ return 175+(i*60)}) 
+  .text(function(d,i){return "Rs "+d.Withdrawals}) 
+  .attr("font-family", "sans-serif")
+  .attr("font-weight","bold")
+.attr("font-size", "12px")
+.attr("fill", "darkblue")
+.attr("text-anchor", "middle");
+
+  svgAreaTotal.selectAll("line.with")
+  .data(HI.WithDrawalsData)
+  .enter()
+  .append("g")
+  .append("line")
+  .attr("x1","820")
+  .attr("y1", function(d,i){ return 120+(i*60)}) 
+  .attr("x2","820")
+  .attr("y2", function(d,i){ return 150+(i*60)}) 
+  .style("stroke", "black");
+  
+
+}
+}
+	</script>
+</div>
+<script>
+var id = document.getElementById("MainPage");
+id.style.display = "none";
+</script>
+</body>
+</html>
