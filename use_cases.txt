@@ -1,5 +1,5 @@
 Transaction Description, Debit, Credit, Date and Time
 Transfer 
 Account to Payee -> list of payees
-New Payee Registration?
+New Payee Registration.
 
